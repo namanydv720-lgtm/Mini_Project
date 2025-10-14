@@ -205,8 +205,8 @@
       <button class="category-btn" onclick="selectCategory(this)">Education</button>
     </div>
     <div class="nav-right">
-      <a href="#">About Us</a>
-      <a href="#">Contact Us</a>
+      <a href="about.html">About Us</a>
+      <a href="contactus.html">Contact Us</a>
       <select id="language-select">
       <option value="en">English</option>
       <option value="hi">हिन्दी</option>
@@ -230,33 +230,50 @@
   <script>
     // Display Current Date
     document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    // News data
     const articles = [
-      { title: "Banke Bihari Temple", description: "A Supreme Court panel has mandated major reforms, including abolishing VIP darshan and extending hours to manage crowds. " },
-      { title: "Krishna Janmabhoomi-Shahi Idgah Case", description: " The Allahabad High Court ordered a survey of the Shahi Idgah Mosque, a decision that has stirred controversy. " },
-      { title: "President's visit", description: "Security was increased and schools were temporarily shut in preparation for the President's visit, during which she offered prayers at several temples. " },
-      { title: "Derailment at Mathura station", description: " In September 2025, a train derailed at Mathura Junction, reportedly due to a mistake by the driver. " },
-      { title: "Illegal monkey shooting", description: " In May 2025, a foreign national was arrested for allegedly shooting over two dozen monkeys with an air gun near Govardhan Hill." },
-    ];
-    const container = document.getElementById('news-container');
-    articles.forEach(article => {
-      const card = document.createElement('div');
-      card.className = 'news-card';
-      card.innerHTML = `
-        <div class='news-title'>${article.title}</div>
-        <div class='news-description'>${article.description}</div>`;
-      container.appendChild(card);
-    });
-    // Existing menu toggle for nav-center (optional for mobile main nav)
-    function toggleMenu() {
-      const navMenu = document.getElementById('nav-menu');
-      navMenu.classList.toggle('active');
-    }
-    // Active category indicator
-    function selectCategory(btn) {
-      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-    }
+    { title: "Banke Bihari Temple", category: "Politics", description: "A Supreme Court panel has mandated major reforms, including abolishing VIP darshan and extending hours to manage crowds." },
+    { title: "Krishna Janmabhoomi-Shahi Idgah Case", category: "Politics", description: "The Allahabad High Court ordered a survey of the Shahi Idgah Mosque, a decision that has stirred controversy." },
+    { title: "President's visit", category: "Politics", description: "Security was increased and schools were temporarily shut in preparation for the President's visit, during which she offered prayers at several temples." },
+    { title: "Derailment at Mathura station", category: "Sports", description: "In September 2025, a train derailed at Mathura Junction, reportedly due to a mistake by the driver." },
+  { title: "Illegal monkey shooting", category: "Business", description: "In May 2025, a foreign national was arrested for allegedly shooting over two dozen monkeys with an air gun near Govardhan Hill." },
+  // Add more articles with different categories as needed
+];
+
+const container = document.getElementById('news-container');
+
+function renderArticles(category) {
+  container.innerHTML = "";
+  const filtered = articles.filter(article => article.category === category);
+  filtered.forEach(article => {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.innerHTML = `
+      <div class='news-title'>${article.title}</div>
+      <div class='news-description'>${article.description}</div>`;
+    container.appendChild(card);
+  });
+}
+
+// Initial render (default to "Sports" or any desired category)
+renderArticles("Sports");
+
+// Menu toggle for nav-center
+function toggleMenu() {
+  const navMenu = document.getElementById('nav-menu');
+  navMenu.classList.toggle('active');
+}
+
+// Active category indicator and news filtering
+function selectCategory(btn) {
+  document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const category = btn.innerText.trim();  // Get the text of the button as category
+  renderArticles(category);
+}
+
+// Make selectCategory globally accessible
+window.selectCategory = selectCategory;
+
   </script>
 </body>
 </html>
