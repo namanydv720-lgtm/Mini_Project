@@ -1,100 +1,580 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Online News Website</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-    header { background: #333; color: #fff; padding: 10px 0;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;}
-    .header-left { display: flex; align-items: center; }
-    .date { font-size: 0.94em; margin-left: 15px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: #434242;
+      color: #fff;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .date {
+      font-size: 0.94em;
+      margin-left: 15px;
+    }
+
     .site-hamburger {
-      font-size: 2em; margin-left: 12px; margin-right: 4px; cursor: pointer;
-      background: none; border: none; color: #fff; display: inline-block;
+      font-size: 2em;
+      margin-left: 12px;
+      margin-right: 4px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #1b1a1a;
+      display: inline-block;
       padding: 0 0 0 0;
     }
-    .site-title { flex: 1; text-align: center; font-size: 1.6em; }
-    .options-right { display: flex; align-items: center; margin-right: 20px; }
-    .options-right button { margin-left: 14px; padding: 6px 18px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-    .login-btn { background: #555; color: #fff; }
-    .subscribe-btn { background: #e60000; color: #fff; }
-    .login-btn:hover { background: #777; }
-    .subscribe-btn:hover { background: #ff4d4d; }
-    nav { background: white; padding: 10px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; position: relative;}
-    .nav-left { display: flex; align-items: center; margin-left: 15px; }
-    .search-container { display: flex; align-items: center; margin-right: 15px; }
-    .search-container input[type="text"] { padding: 7px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-    .nav-center { display: flex; align-items: center; justify-content: center; flex: 1; flex-wrap: wrap; }
-    nav select, nav .category-btn, nav a {
-      margin: 0 10px; padding: 6px 12px; border-radius: 4px; border: none;
-      font-weight: bold; background: #eee; color: #333; text-decoration: none; cursor: pointer;
+
+    .news-masthead {
+      font-family: 'Times New Roman', serif;
+      font-size: 3.8em;
+      font-weight: bold;
+      text-align: center;
+      padding: 15px 0;
+      letter-spacing: 2px;
+      color: #000;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
     }
-    nav .category-btn.selected { background: #333; color: #fff; }
-    .nav-right { display: flex; align-items: center; margin-right: 15px; }
-    main { padding: 20px; }
-    .news-card { background: #fff; margin-bottom: 20px; padding: 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);}
-    .news-title { font-size: 1.25em; margin-bottom: 10px; color: #333; }
-    .news-description { color: #555; }
-    footer { background: #222; color: #ccc; text-align: center; padding: 15px 0; position: fixed; width: 100%; bottom: 0;}
+
+    .site-title {
+      flex: 1;
+      text-align: center;
+      font-size: 1.6em;
+    }
+
+    .options-right {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .options-right button {
+      margin-left: 14px;
+      padding: 6px 18px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .login-btn {
+      background: #555;
+      color: #fff;
+    }
+
+    .subscribe-btn {
+      background: #e60000;
+      color: #fff;
+    }
+
+    .login-btn:hover {
+      background: #777;
+    }
+
+    .subscribe-btn:hover {
+      background: #ff4d4d;
+    }
+
+    nav {
+      background: white;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      margin-left: 15px;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+    }
+
+    .search-container input[type="text"] {
+      padding: 7px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    nav select,
+    nav .category-btn,
+    nav a {
+      margin: 0 10px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      font-weight: bold;
+      background: #eee;
+      color: #333;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    nav .category-btn.selected {
+      background: #333;
+      color: #fff;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+    }
+
+    main {
+      padding: 20px;
+      min-height: 80vh;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* BBC-style compact news card layout */
+    .news-card {
+      background: #fff;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .news-card:hover {
+      background: #f9f9f9;
+    }
+
+    /* Small thumbnail on left */
+    .news-card img {
+      width: 120px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Content area */
+    .news-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NEW badge */
+    .news-badge {
+      display: inline-block;
+      background: #e60000;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Headline styling */
+    .news-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #222;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Hide description on main page */
+    .news-description {
+      display: none;
+    }
+
+    /* Meta info */
+    .news-meta {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    footer {
+      background: #222;
+      color: #ccc;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 40px;
+    }
+
+    /* Article Modal Styles */
+    .article-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10001;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .article-modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s;
+    }
+
+    .article-modal-content {
+      background: white;
+      max-width: 900px;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .article-modal-header {
+      position: relative;
+      padding: 0;
+    }
+
+    .article-modal-image {
+      width: 100%;
+      height: auto;
+      max-height: 500px;
+      object-fit: cover;
+    }
+
+    .article-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .article-modal-close:hover {
+      background: rgba(255, 0, 0, 0.9);
+      transform: rotate(90deg);
+    }
+
+    .article-modal-body {
+      padding: 40px;
+    }
+
+    .article-modal-title {
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      color: #222;
+      font-weight: bold;
+      line-height: 1.3;
+    }
+
+    .article-modal-meta {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .article-modal-meta span {
+      margin-right: 20px;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    .article-modal-meta i {
+      margin-right: 5px;
+      color: #e60000;
+    }
+
+    .article-modal-description {
+      color: #333;
+      line-height: 1.8;
+      font-size: 17px;
+      text-align: justify;
+    }
+
     /* Side hamburger styles */
     .menu-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background:#fff; z-index: 10000; overflow-y: auto; transition: all 0.3s;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 10000;
+      overflow-y: auto;
+      transition: all 0.3s;
     }
-    .menu-overlay.active { display: block; animation: fadeIn 0.2s;}
-    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+    .menu-overlay.active {
+      display: block;
+      animation: fadeIn 0.2s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
     .menu-header {
-      display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #eee; gap: 20px;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      gap: 20px;
     }
-    .menu-header .fa-xmark { font-size: 1.7em; cursor: pointer; }
-    .menu-header .fa-magnifying-glass { font-size: 1.2em; }
-    .menu-header input { border: none; outline: none; margin-left: 6px; padding: 7px 14px; border-radius: 6px; background: #fafafa; }
-    .menu-list { display: flex; flex-wrap: wrap; gap: 40px; justify-content: flex-start; align-items: stretch; margin: 32px;}
-    .menu-col { flex: 1; min-width: 180px; }
-    .menu-section { margin-bottom: 22px; }
-    .menu-section .section-title { font-weight: bold; font-size: 1.18em; margin-bottom: 12px; }
-    .menu-section .menu-link { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; cursor: pointer;}
-    .right-sections { border-left: 1px solid #eee; padding-left: 40px; min-width: 230px;}
-    .right-sections .menu-link { font-size: 1.04em; margin: 16px 0; display: flex; align-items: center; gap: 16px;}
-    .menu-link i { margin-right: 9px; min-width: 20px;}
-    .live-now { color: #e11; font-weight: bold; margin-left: 8px; }
-    .icon-dot { font-size: 1.1em; color: #e11; }
+
+    .menu-header .fa-xmark {
+      font-size: 1.7em;
+      cursor: pointer;
+    }
+
+    .menu-header .fa-magnifying-glass {
+      font-size: 1.2em;
+    }
+
+    .menu-header input {
+      border: none;
+      outline: none;
+      margin-left: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+
+    .menu-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: flex-start;
+      align-items: stretch;
+      margin: 32px;
+    }
+
+    .menu-col {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .menu-section {
+      margin-bottom: 22px;
+    }
+
+    .menu-section .section-title {
+      font-weight: bold;
+      font-size: 1.18em;
+      margin-bottom: 12px;
+    }
+
+    .menu-section .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .right-sections {
+      border-left: 1px solid #eee;
+      padding-left: 40px;
+      min-width: 230px;
+    }
+
+    .right-sections .menu-link {
+      font-size: 1.04em;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-link i {
+      margin-right: 9px;
+      min-width: 20px;
+    }
+
+    .live-now {
+      color: #e11;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
+    .icon-dot {
+      font-size: 1.1em;
+      color: #e11;
+    }
+
     @media (max-width: 800px) {
-      .menu-list { flex-direction: column; gap: 0; margin: 10px;}
-      .right-sections { border: none; padding-left: 0;}
-      .menu-col { min-width: unset; }
+      .menu-list {
+        flex-direction: column;
+        gap: 0;
+        margin: 10px;
+      }
+
+      .right-sections {
+        border: none;
+        padding-left: 0;
+      }
+
+      .menu-col {
+        min-width: unset;
+      }
+
+      .article-modal-body {
+        padding: 20px;
+      }
+
+      .article-modal-title {
+        font-size: 1.6em;
+      }
+
+      .article-modal-description {
+        font-size: 15px;
+      }
+
+      .news-card img {
+        width: 100px;
+        height: 70px;
+      }
     }
+
     @media (max-width: 768px) {
-      .nav-left, .search-container { flex-direction: row; }
-      .nav-center { display: none; flex-direction: column; width: 100%; }
-      .nav-center.active { display: flex; }
-      nav { flex-direction: column; align-items: flex-start;}
-      .nav-left, .nav-right { width: 100%; justify-content: flex-start; }
-      .site-title { text-align: left; font-size: 1.3em; margin-left: 10px;}
-      main { padding: 10px;}
-      .news-card { padding: 10px;}
+
+      .nav-left,
+      .search-container {
+        flex-direction: row;
+      }
+
+      .nav-center {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .nav-center.active {
+        display: flex;
+      }
+
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-left,
+      .nav-right {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .site-title {
+        text-align: left;
+        font-size: 1.3em;
+        margin-left: 10px;
+      }
+
+      main {
+        padding: 10px;
+      }
+
+      .news-card {
+        padding: 10px;
+        flex-direction: column;
+      }
+
+      .news-card img {
+        width: 100%;
+        height: 200px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <!-- Side Menu Hamburger and Date (left side of header) -->
+  <div class="news-masthead">
+    DAILY NEWS
+  </div>
   <header>
     <div class="header-left">
-      <button class="site-hamburger" onclick="document.getElementById('sideMenu').classList.add('active')">
-        <i class="fas fa-bars"></i>
-      </button>
       <div class="date" id="current-date"></div>
     </div>
-    <div class="site-title">Daily News</div>
-    <div class="options-right">
-        <a href="login.html"><button class="login-btn">Login</button></a>
-        <a href="signup.html"><button class="subscribe-btn">Sign Up</button></a>
+    <div class="options-right" id="headerButtons">
+      <!-- Will be populated by JavaScript -->
     </div>
-
   </header>
 
   <!-- Hamburger Side Menu Overlay -->
@@ -174,106 +654,403 @@
 
   <nav>
     <div class="nav-left">
+      <button class="site-hamburger" onclick="document.getElementById('sideMenu').classList.add('active')">
+        <i class="fas fa-bars"></i>
+      </button>
       <div class="search-container">
-        <input type="text" placeholder="Search news..." />
+        <input type="text" id="search-input" placeholder="Search news..." onkeyup="searchArticles()" />
       </div>
     </div>
     <div class="nav-center" id="nav-menu">
-      <a href="#">Home</a>
-      <select id="district-select">
-        <option value="Uttar pradesh">Uttar pradesh</option>
+      <a href="#" onclick="loadAllArticles()">Home</a>
+      
+      <!-- State dropdown with dynamic update -->
+      <select id="district-select" onchange="updateDistricts()">
+        <option value="">Select State</option>
+        <option value="Uttar Pradesh">Uttar Pradesh</option>
         <option value="Delhi">Delhi</option>
         <option value="Haryana">Haryana</option>
         <option value="Jharkhand">Jharkhand</option>
         <option value="Madhya Pradesh">Madhya Pradesh</option>
         <option value="Bihar">Bihar</option>
+        <option value="Bihar">Jammu and Kashmir</option>
+        <option value="Home">Home</option>
       </select>
-      <select id="city-select">
-        <option value="Varanasi">Varanasi</option>
-        <option value="Mathura">Mathura</option>
-        <option value="Agra">Agra</option>
-        <option value="Hathras">Hathras</option>
-        <option value="Lucknow">Lucknow</option>
-        <option value="Gorakhpur">Gorakhpur</option>
-        <option value="Azamgarh">Azamgarh</option>
-        <option value="Mirzapur">Mirzapur</option>
+      
+      <!-- District dropdown - populated dynamically -->
+      <select id="city-select" onchange="handleFilterChange()">
+        <option value="">Select District</option>
       </select>
+      
       <button class="category-btn selected" onclick="selectCategory(this)">Sports</button>
       <button class="category-btn" onclick="selectCategory(this)">Politics</button>
       <button class="category-btn" onclick="selectCategory(this)">Business</button>
       <button class="category-btn" onclick="selectCategory(this)">Tech</button>
       <button class="category-btn" onclick="selectCategory(this)">Education</button>
+      <button class="category-btn" onclick="selectCategory(this)">World news</button>
     </div>
     <div class="nav-right">
       <a href="about.html">About Us</a>
       <a href="contactus.html">Contact Us</a>
-      <select id="language-select">
-      <option value="en">English</option>
-      <option value="hi">हिन्दी</option>
-      <option value="bn">বাংলা</option>
-      <option value="ta">தமிழ்</option>
-      <option value="te">తెలుగు</option>
-      <option value="mr">मराठी</option>
-      <option value="gu">ગુજરાતી</option>
-      </select> 
+      <select id="language-select" onchange="handleFilterChange()">
+        <option value="">Language</option>
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="bn">বাংলা</option>
+        <option value="ta">தமிழ்</option>
+        <option value="te">తెలుగు</option>
+        <option value="mr">मराठी</option>
+        <option value="gu">ગુજરાતી</option>
+      </select>
     </div>
   </nav>
 
   <main>
-    <div id="news-container"></div>
+    <div id="news-container">Loading articles...</div>
   </main>
+
+  <!-- Article Modal -->
+  <div class="article-modal" id="articleModal">
+    <div class="article-modal-content">
+      <div class="article-modal-header">
+        <img id="modalImage" class="article-modal-image" src="" alt="" style="display: none;">
+        <button class="article-modal-close" onclick="closeArticleModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="article-modal-body">
+        <h1 class="article-modal-title" id="modalTitle"></h1>
+        <div class="article-modal-meta" id="modalMeta"></div>
+        <div class="article-modal-description" id="modalDescription"></div>
+      </div>
+    </div>
+  </div>
 
   <footer>
     &copy; 2025 Daily Online News. All rights reserved.
   </footer>
 
   <script>
-    // Display Current Date
-    document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    const articles = [
-    { title: "Banke Bihari Temple", category: "Politics", description: "A Supreme Court panel has mandated major reforms, including abolishing VIP darshan and extending hours to manage crowds." },
-    { title: "Krishna Janmabhoomi-Shahi Idgah Case", category: "Politics", description: "The Allahabad High Court ordered a survey of the Shahi Idgah Mosque, a decision that has stirred controversy." },
-    { title: "President's visit", category: "Politics", description: "Security was increased and schools were temporarily shut in preparation for the President's visit, during which she offered prayers at several temples." },
-    { title: "Derailment at Mathura station", category: "Sports", description: "In September 2025, a train derailed at Mathura Junction, reportedly due to a mistake by the driver." },
-  { title: "Illegal monkey shooting", category: "Business", description: "In May 2025, a foreign national was arrested for allegedly shooting over two dozen monkeys with an air gun near Govardhan Hill." },
-  // Add more articles with different categories as needed
-];
+    const API_BASE_URL = 'http://localhost:3000';
 
-const container = document.getElementById('news-container');
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 
-function renderArticles(category) {
-  container.innerHTML = "";
-  const filtered = articles.filter(article => article.category === category);
-  filtered.forEach(article => {
-    const card = document.createElement('div');
-    card.className = 'news-card';
-    card.innerHTML = `
-      <div class='news-title'>${article.title}</div>
-      <div class='news-description'>${article.description}</div>`;
-    container.appendChild(card);
-  });
-}
+    const container = document.getElementById('news-container');
+    let currentCategory = 'Home';
 
-// Initial render (default to "Sports" or any desired category)
-renderArticles("Sports");
+    // State to District mapping
+    const stateDistrictMap = {
+      "Uttar Pradesh": [
+        "Varanasi",
+        "Mathura",
+        "Agra",
+        "Hathras",
+        "Lucknow",
+        "Gorakhpur",
+        "Azamgarh",
+        "Mirzapur",
+        "Prayagraj",
+        "Kanpur",
+        "Meerut",
+        "Ghaziabad"
+      ],
+      "Delhi": [
+        "Central Delhi",
+        "East Delhi",
+        "New Delhi",
+        "North Delhi",
+        "South Delhi",
+        "West Delhi"
+      ],
+      "Haryana": [
+        "Gurugram",
+        "Faridabad",
+        "Panipat",
+        "Ambala",
+        "Karnal",
+        "Hisar",
+        "Rohtak"
+      ],
+      "Jharkhand": [
+        "Ranchi",
+        "Jamshedpur",
+        "Dhanbad",
+        "Bokaro",
+        "Deoghar",
+        "Hazaribagh"
+      ],
+      "Madhya Pradesh": [
+        "Bhopal",
+        "Indore",
+        "Gwalior",
+        "Jabalpur",
+        "Ujjain",
+        "Sagar",
+        "Ratlam"
+      ],
+      "Bihar": [
+        "Patna",
+        "Gaya",
+        "Bhagalpur",
+        "Muzaffarpur",
+        "Purnia",
+        "Darbhanga",
+        "Bihar Sharif"
+      ],
+      "Jammu and Kashmir":[
+      "Jammu",
+      "Kathua",
+      "Samba",
+      "Udhampur",
+      "Pulwama"
+      ],
+      "Home":["home"]
+    };
 
-// Menu toggle for nav-center
-function toggleMenu() {
-  const navMenu = document.getElementById('nav-menu');
-  navMenu.classList.toggle('active');
-}
+    // Update districts based on selected state
+    function updateDistricts() {
+      const stateSelect = document.getElementById('district-select');
+      const districtSelect = document.getElementById('city-select');
+      const selectedState = stateSelect.value;
 
-// Active category indicator and news filtering
-function selectCategory(btn) {
-  document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  const category = btn.innerText.trim();  // Get the text of the button as category
-  renderArticles(category);
-}
+      // Clear current districts
+      districtSelect.innerHTML = '<option value="">Select District</option>';
 
-// Make selectCategory globally accessible
-window.selectCategory = selectCategory;
+      // If a state is selected, populate its districts
+      if (selectedState && stateDistrictMap[selectedState]) {
+        stateDistrictMap[selectedState].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      }
+
+      // Trigger filter change
+      handleFilterChange();
+    }
+
+    async function fetchArticles(filters = {}) {
+      try {
+        container.innerHTML = "Loading articles...";
+
+        const queryParams = new URLSearchParams();
+        Object.keys(filters).forEach(key => {
+          if (filters[key]) {
+            queryParams.append(key, filters[key]);
+          }
+        });
+
+        const url = `${API_BASE_URL}/api/articles?${queryParams.toString()}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch articles');
+        }
+
+        const articles = await response.json();
+        renderArticles(articles);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        container.innerHTML = `<p style="color: red;">Error loading articles. Please make sure the backend server is running on ${API_BASE_URL}</p>`;
+      }
+    }
+
+    // BBC-style compact layout
+    function renderArticles(articles) {
+      container.innerHTML = "";
+
+      if (articles.length === 0) {
+        container.innerHTML = "<p>No articles found in this category.</p>";
+        return;
+      }
+
+      articles.forEach((article, index) => {
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.onclick = () => openArticleModal(article);
+
+        const imageHTML = article.imageUrl
+          ? `<img src="${API_BASE_URL}${article.imageUrl}" alt="${article.title}" onerror="this.style.display='none'">`
+          : '';
+
+        // Show "NEW" badge for first 3 articles
+        const badgeHTML = index < 3 ? '<span class="news-badge">NEW</span>' : '';
+
+        card.innerHTML = `
+          ${imageHTML}
+          <div class="news-content">
+            ${badgeHTML}
+            <h3 class="news-title">${article.title}</h3>
+            <div class="news-meta">${article.category || ''}</div>
+          </div>`;
+        container.appendChild(card);
+      });
+    }
+
+    function openArticleModal(article) {
+      const modal = document.getElementById('articleModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMeta = document.getElementById('modalMeta');
+      const modalDescription = document.getElementById('modalDescription');
+
+      modalTitle.textContent = article.title;
+      modalDescription.textContent = article.description;
+
+      if (article.imageUrl) {
+        modalImage.src = API_BASE_URL + article.imageUrl;
+        modalImage.style.display = 'block';
+      } else {
+        modalImage.style.display = 'none';
+      }
+
+      let metaHTML = '';
+      if (article.category) metaHTML += `<span><i class="fas fa-tag"></i><strong>Category:</strong> ${article.category}</span>`;
+      if (article.state) metaHTML += `<span><i class="fas fa-map-marker-alt"></i><strong>State:</strong> ${article.state}</span>`;
+      if (article.district) metaHTML += `<span><i class="fas fa-location-dot"></i><strong>District:</strong> ${article.district}</span>`;
+      if (article.language) metaHTML += `<span><i class="fas fa-language"></i><strong>Language:</strong> ${article.language}</span>`;
+      if (article.createdAt) {
+        const date = new Date(article.createdAt).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+        metaHTML += `<span><i class="fas fa-calendar"></i><strong>Published:</strong> ${date}</span>`;
+      }
+      modalMeta.innerHTML = metaHTML;
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeArticleModal() {
+      const modal = document.getElementById('articleModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.addEventListener('click', function (e) {
+      const modal = document.getElementById('articleModal');
+      if (e.target === modal) {
+        closeArticleModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeArticleModal();
+      }
+    });
+
+    function selectCategory(btn) {
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      currentCategory = btn.innerText.trim();
+      handleFilterChange();
+    }
+
+    function handleFilterChange() {
+      const filters = {
+        category: currentCategory,
+        state: document.getElementById('district-select').value,
+        district: document.getElementById('city-select').value,
+        language: document.getElementById('language-select').value
+      };
+      fetchArticles(filters);
+    }
+
+    function searchArticles() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+
+      if (query.trim() === '') {
+        handleFilterChange();
+        return;
+      }
+
+      fetch(`${API_BASE_URL}/api/articles`)
+        .then(res => res.json())
+        .then(articles => {
+          const filtered = articles.filter(article =>
+            article.title.toLowerCase().includes(query) ||
+            article.description.toLowerCase().includes(query)
+          );
+          renderArticles(filtered);
+        })
+        .catch(err => {
+          console.error('Search error:', err);
+        });
+    }
+
+    function loadAllArticles() {
+      document.getElementById('district-select').value = '';
+      document.getElementById('city-select').value = '';
+      document.getElementById('language-select').value = '';
+      document.getElementById('search-input').value = '';
+
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelector('.category-btn').classList.add('selected');
+      currentCategory = 'Sports';
+
+      handleFilterChange();
+    }
+
+    function updateHeader() {
+      const userName = localStorage.getItem('userName');
+      const headerButtons = document.getElementById('headerButtons');
+
+      if (userName) {
+        headerButtons.innerHTML = `
+          <span style="margin-right: 15px; color: white; font-size: 14px;">
+            Welcome, <strong style="color: #ffd700;">${userName}</strong>
+          </span>
+          <button class="subscribe-btn" onclick="logout()">Logout</button>
+        `;
+      } else {
+        headerButtons.innerHTML = `
+          <a href="login.html"><button class="login-btn">Login</button></a>
+          <a href="signup.html"><button class="subscribe-btn">Sign Up</button></a>
+        `;
+      }
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        updateHeader();
+        alert('Logged out successfully!');
+        window.location.reload();
+      }
+    }
+
+    window.selectCategory = selectCategory;
+    window.searchArticles = searchArticles;
+    window.handleFilterChange = handleFilterChange;
+    window.loadAllArticles = loadAllArticles;
+    window.logout = logout;
+    window.openArticleModal = openArticleModal;
+    window.closeArticleModal = closeArticleModal;
+    window.updateDistricts = updateDistricts;
+
+    updateHeader();
+
+// Set English as default language
+document.getElementById('language-select').value = 'en';
+
+// Fetch English articles on page load
+fetchArticles({ 
+  category: currentCategory,
+  language: 'en'  // ← Add this to show only English by default
+});
 
   </script>
 </body>
+
 </html>

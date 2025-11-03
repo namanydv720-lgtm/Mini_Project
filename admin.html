@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>News Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+    .header {
+      background: #333;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .tab-btn.active {
+      background: #e60000;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: #e60000;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn-primary:hover {
+      background: #cc0000;
+    }
+    .btn-edit {
+      background: #007bff;
+      color: white;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    .btn-edit:hover {
+      background: #0056b3;
+    }
+    .btn-delete {
+      background: #dc3545;
+      color: white;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    .btn-delete:hover {
+      background: #c82333;
+    }
+    .btn-cancel {
+      background: #6c757d;
+      color: white;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    .alert {
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .preview-image {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    .article-list {
+      margin-top: 20px;
+    }
+    .article-item {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    .article-item img {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .article-info {
+      flex: 1;
+    }
+    .article-info h3 {
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .article-info p {
+      color: #666;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    .article-meta {
+      font-size: 12px;
+      color: #999;
+      margin-top: 5px;
+    }
+    .article-actions {
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-header h2 {
+      margin: 0;
+    }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><i class="fas fa-newspaper"></i> News Admin Panel</h1>
+    <p>Manage your news articles</p>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('add')">
+        <i class="fas fa-plus-circle"></i> Add Article
+      </button>
+      <button class="tab-btn" onclick="switchTab('manage')">
+        <i class="fas fa-list"></i> Manage Articles
+      </button>
+    </div>
+
+    <!-- Add Article Tab -->
+    <div id="addTab" class="tab-content active">
+      <h2 style="margin-bottom: 20px;"><i class="fas fa-plus-circle"></i> Add New Article</h2>
+      
+      <div id="addSuccess" class="alert alert-success"></div>
+      <div id="addError" class="alert alert-error"></div>
+
+      <form id="addArticleForm">
+        <div class="form-group">
+          <label for="addTitle">Title *</label>
+          <input type="text" id="addTitle" required>
+        </div>
+
+        <div class="form-group">
+          <label for="addDescription">Description *</label>
+          <textarea id="addDescription" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="addCategory">Category *</label>
+          <select id="addCategory" required>
+            <option value="">Select Category</option>
+            <option value="Sports">Sports</option>
+            <option value="Politics">Politics</option>
+            <option value="Business">Business</option>
+            <option value="Tech">Tech</option>
+            <option value="Education">Education</option>
+            <option value="World news">World news</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="addState">State *</label>
+          <select id="addState" onchange="updateAddDistricts()" required>
+            <option value="">Select State</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Home">Home</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="addDistrict">District *</label>
+          <select id="addDistrict" required>
+            <option value="">Select District</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="addLanguage">Language *</label>
+          <select id="addLanguage" required>
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="bn">বাংলা</option>
+            <option value="ta">தமிழ்</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="addImage">Upload Image (optional)</label>
+          <input type="file" id="addImage" accept="image/*">
+          <img id="addPreviewImage" class="preview-image" alt="Preview">
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> Add Article
+        </button>
+      </form>
+    </div>
+
+    <!-- Manage Articles Tab -->
+    <div id="manageTab" class="tab-content">
+      <h2 style="margin-bottom: 20px;"><i class="fas fa-list"></i> Manage Articles</h2>
+      
+      <div id="manageSuccess" class="alert alert-success"></div>
+      <div id="manageError" class="alert alert-error"></div>
+
+      <div id="articleList" class="article-list">
+        <div class="loading">Loading articles...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-edit"></i> Edit Article</h2>
+        <button class="close-modal" onclick="closeEditModal()">&times;</button>
+      </div>
+
+      <div id="editSuccess" class="alert alert-success"></div>
+      <div id="editError" class="alert alert-error"></div>
+
+      <form id="editArticleForm">
+        <input type="hidden" id="editId">
+
+        <div class="form-group">
+          <label for="editTitle">Title *</label>
+          <input type="text" id="editTitle" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editDescription">Description *</label>
+          <textarea id="editDescription" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editCategory">Category *</label>
+          <select id="editCategory" required>
+            <option value="Sports">Sports</option>
+            <option value="Politics">Politics</option>
+            <option value="Business">Business</option>
+            <option value="Tech">Tech</option>
+            <option value="Education">Education</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editState">State *</label>
+          <select id="editState" onchange="updateEditDistricts()" required>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Home">Home</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editDistrict">District *</label>
+          <select id="editDistrict" required>
+            <option value="">Select District</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editLanguage">Language *</label>
+          <select id="editLanguage" required>
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="bn">বাংলা</option>
+            <option value="ta">தமிழ்</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editImage">Change Image (optional)</label>
+          <input type="file" id="editImage" accept="image/*">
+          <img id="editPreviewImage" class="preview-image" alt="Preview">
+          <input type="hidden" id="editCurrentImageUrl">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+          <button type="button" class="btn btn-cancel" onclick="closeEditModal()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000';
+
+    // State to District mapping
+    const stateDistrictMap = {
+      "Uttar Pradesh": [
+        "Varanasi", "Mathura", "Agra", "Hathras", "Lucknow", 
+        "Gorakhpur", "Azamgarh", "Mirzapur", "Prayagraj", 
+        "Kanpur", "Meerut", "Ghaziabad"
+      ],
+      "Delhi": [
+        "Central Delhi", "East Delhi", "New Delhi", 
+        "North Delhi", "South Delhi", "West Delhi"
+      ],
+      "Haryana": [
+        "Gurugram", "Faridabad", "Panipat", "Ambala", 
+        "Karnal", "Hisar", "Rohtak"
+      ],
+      "Jharkhand": [
+        "Ranchi", "Jamshedpur", "Dhanbad", 
+        "Bokaro", "Deoghar", "Hazaribagh"
+      ],
+      "Madhya Pradesh": [
+        "Bhopal", "Indore", "Gwalior", "Jabalpur", 
+        "Ujjain", "Sagar", "Ratlam"
+      ],
+      "Bihar": [
+        "Patna", "Gaya", "Bhagalpur", "Muzaffarpur", 
+        "Purnia", "Darbhanga", "Bihar Sharif"
+      ],
+      "Jammu and Kashmir": [
+        "Jammu", "Kathua", "Samba", "Udhampur", "Pulwama"
+      ],
+      "Home":["Home"]
+    };
+
+    // Update districts for Add form
+    function updateAddDistricts() {
+      const stateSelect = document.getElementById('addState');
+      const districtSelect = document.getElementById('addDistrict');
+      const selectedState = stateSelect.value;
+      
+      districtSelect.innerHTML = '<option value="">Select District</option>';
+      
+      if (selectedState && stateDistrictMap[selectedState]) {
+        stateDistrictMap[selectedState].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      }
+    }
+
+    // Update districts for Edit form
+    function updateEditDistricts() {
+      const stateSelect = document.getElementById('editState');
+      const districtSelect = document.getElementById('editDistrict');
+      const selectedState = stateSelect.value;
+      const currentDistrict = districtSelect.value;
+      
+      districtSelect.innerHTML = '<option value="">Select District</option>';
+      
+      if (selectedState && stateDistrictMap[selectedState]) {
+        stateDistrictMap[selectedState].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          if (district === currentDistrict) {
+            option.selected = true;
+          }
+          districtSelect.appendChild(option);
+        });
+      }
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      if (tab === 'add') {
+        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('addTab').classList.add('active');
+      } else {
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        document.getElementById('manageTab').classList.add('active');
+        loadArticles();
+      }
+    }
+
+    // Image preview for add form
+    document.getElementById('addImage').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('addPreviewImage').src = e.target.result;
+          document.getElementById('addPreviewImage').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Image preview for edit form
+    document.getElementById('editImage').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('editPreviewImage').src = e.target.result;
+          document.getElementById('editPreviewImage').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Add article form submission
+    document.getElementById('addArticleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const addSuccess = document.getElementById('addSuccess');
+      const addError = document.getElementById('addError');
+      addSuccess.style.display = 'none';
+      addError.style.display = 'none';
+
+      try {
+        let imageUrl = '';
+        const imageFile = document.getElementById('addImage').files[0];
+
+        if (imageFile) {
+          const formData = new FormData();
+          formData.append('image', imageFile);
+          const uploadResponse = await fetch(`${API_BASE_URL}/api/upload`, {
+            method: 'POST',
+            body: formData
+          });
+          if (!uploadResponse.ok) throw new Error('Image upload failed');
+          const uploadData = await uploadResponse.json();
+          imageUrl = uploadData.imageUrl;
+        }
+
+        const articleData = {
+          title: document.getElementById('addTitle').value,
+          description: document.getElementById('addDescription').value,
+          category: document.getElementById('addCategory').value,
+          state: document.getElementById('addState').value,
+          district: document.getElementById('addDistrict').value,
+          language: document.getElementById('addLanguage').value,
+          imageUrl: imageUrl
+        };
+
+        const response = await fetch(`${API_BASE_URL}/api/articles`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(articleData)
+        });
+
+        if (!response.ok) throw new Error('Failed to create article');
+
+        addSuccess.textContent = 'Article added successfully!';
+        addSuccess.style.display = 'block';
+        document.getElementById('addArticleForm').reset();
+        document.getElementById('addPreviewImage').style.display = 'none';
+        document.getElementById('addDistrict').innerHTML = '<option value="">Select District</option>';
+
+        setTimeout(() => addSuccess.style.display = 'none', 3000);
+      } catch (error) {
+        addError.textContent = 'Error: ' + error.message;
+        addError.style.display = 'block';
+      }
+    });
+
+    // Load articles - IMPROVED with error handling
+    async function loadArticles() {
+      const articleList = document.getElementById('articleList');
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/articles`);
+        const articles = await response.json();
+        
+        if (articles.length === 0) {
+          articleList.innerHTML = '<div class="loading">No articles found.</div>';
+          return;
+        }
+
+        articleList.innerHTML = '';
+        articles.forEach(article => {
+          const item = document.createElement('div');
+          item.className = 'article-item';
+          
+          // Escape special characters in article data to prevent JSON issues
+          const safeArticle = {
+            _id: article._id,
+            title: article.title,
+            description: article.description,
+            category: article.category,
+            state: article.state,
+            district: article.district,
+            language: article.language,
+            imageUrl: article.imageUrl || ''
+          };
+          
+          item.innerHTML = `
+            ${article.imageUrl ? `<img src="${API_BASE_URL}${article.imageUrl}" alt="${article.title}">` : ''}
+            <div class="article-info">
+              <h3>${article.title}</h3>
+              <p>${article.description.substring(0, 150)}...</p>
+              <div class="article-meta">
+                <strong>Category:</strong> ${article.category} | 
+                <strong>State:</strong> ${article.state} | 
+                <strong>District:</strong> ${article.district} | 
+                <strong>Language:</strong> ${article.language}
+              </div>
+            </div>
+            <div class="article-actions">
+              <button class="btn btn-edit" data-article-id="${article._id}">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-delete" onclick="deleteArticle('${article._id}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          `;
+          
+          // Add click handler for edit button
+          const editBtn = item.querySelector('.btn-edit');
+          editBtn.addEventListener('click', function() {
+            openEditModal(safeArticle);
+          });
+          
+          articleList.appendChild(item);
+        });
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        articleList.innerHTML = '<div class="loading" style="color: red;">Error loading articles. Please refresh the page.</div>';
+      }
+    }
+
+    // Open edit modal
+    function openEditModal(article) {
+      document.getElementById('editModal').classList.add('active');
+      document.getElementById('editId').value = article._id;
+      document.getElementById('editTitle').value = article.title;
+      document.getElementById('editDescription').value = article.description;
+      document.getElementById('editCategory').value = article.category;
+      document.getElementById('editState').value = article.state;
+      document.getElementById('editLanguage').value = article.language;
+      document.getElementById('editCurrentImageUrl').value = article.imageUrl || '';
+      
+      // Populate districts for the selected state
+      const districtSelect = document.getElementById('editDistrict');
+      districtSelect.innerHTML = '<option value="">Select District</option>';
+      
+      if (article.state && stateDistrictMap[article.state]) {
+        stateDistrictMap[article.state].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          if (district === article.district) {
+            option.selected = true;
+          }
+          districtSelect.appendChild(option);
+        });
+      }
+      
+      if (article.imageUrl) {
+        document.getElementById('editPreviewImage').src = API_BASE_URL + article.imageUrl;
+        document.getElementById('editPreviewImage').style.display = 'block';
+      } else {
+        document.getElementById('editPreviewImage').style.display = 'none';
+      }
+    }
+
+    // Close edit modal
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+      document.getElementById('editArticleForm').reset();
+      document.getElementById('editPreviewImage').style.display = 'none';
+    }
+
+    // Edit article form submission
+    document.getElementById('editArticleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const editSuccess = document.getElementById('editSuccess');
+      const editError = document.getElementById('editError');
+      editSuccess.style.display = 'none';
+      editError.style.display = 'none';
+
+      try {
+        let imageUrl = document.getElementById('editCurrentImageUrl').value;
+        const imageFile = document.getElementById('editImage').files[0];
+
+        if (imageFile) {
+          const formData = new FormData();
+          formData.append('image', imageFile);
+          const uploadResponse = await fetch(`${API_BASE_URL}/api/upload`, {
+            method: 'POST',
+            body: formData
+          });
+          if (!uploadResponse.ok) throw new Error('Image upload failed');
+          const uploadData = await uploadResponse.json();
+          imageUrl = uploadData.imageUrl;
+        }
+
+        const articleData = {
+          title: document.getElementById('editTitle').value,
+          description: document.getElementById('editDescription').value,
+          category: document.getElementById('editCategory').value,
+          state: document.getElementById('editState').value,
+          district: document.getElementById('editDistrict').value,
+          language: document.getElementById('editLanguage').value,
+          imageUrl: imageUrl
+        };
+
+        const articleId = document.getElementById('editId').value;
+        const response = await fetch(`${API_BASE_URL}/api/articles/${articleId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(articleData)
+        });
+
+        if (!response.ok) throw new Error('Failed to update article');
+
+        editSuccess.textContent = 'Article updated successfully!';
+        editSuccess.style.display = 'block';
+
+        setTimeout(() => {
+          closeEditModal();
+          loadArticles();
+          document.getElementById('manageSuccess').textContent = 'Article updated successfully!';
+          document.getElementById('manageSuccess').style.display = 'block';
+          setTimeout(() => document.getElementById('manageSuccess').style.display = 'none', 3000);
+        }, 1000);
+      } catch (error) {
+        editError.textContent = 'Error: ' + error.message;
+        editError.style.display = 'block';
+      }
+    });
+
+    // Delete article
+    async function deleteArticle(id) {
+      if (!confirm('Are you sure you want to delete this article?')) return;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/articles/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete article');
+
+        document.getElementById('manageSuccess').textContent = 'Article deleted successfully!';
+        document.getElementById('manageSuccess').style.display = 'block';
+        setTimeout(() => document.getElementById('manageSuccess').style.display = 'none', 3000);
+        
+        loadArticles();
+      } catch (error) {
+        document.getElementById('manageError').textContent = 'Error: ' + error.message;
+        document.getElementById('manageError').style.display = 'block';
+      }
+    }
+
+    // Make functions globally accessible
+    window.switchTab = switchTab;
+    window.openEditModal = openEditModal;
+    window.closeEditModal = closeEditModal;
+    window.deleteArticle = deleteArticle;
+    window.updateAddDistricts = updateAddDistricts;
+    window.updateEditDistricts = updateEditDistricts;
+  </script>
+</body>
+</html>

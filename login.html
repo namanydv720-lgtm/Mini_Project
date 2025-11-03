@@ -5,27 +5,182 @@
   <title>Login - Daily News</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .login-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); width: 300px;}
-    h2 { text-align: center; color: #333; margin-bottom: 20px; }
-    input[type="email"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ddd; box-sizing: border-box; }
-    button { width: 100%; padding: 10px; background: #e60000; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: #ff4d4d; }
-    .signup-link { text-align: center; margin-top: 12px; }
-    .signup-link a { color: #e60000; text-decoration: none; font-weight: bold; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      margin: 0; 
+    }
+    .login-container { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 10px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 { 
+      text-align: center; 
+      color: #333; 
+      margin-bottom: 30px; 
+      font-size: 28px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input[type="email"], 
+    input[type="password"] { 
+      width: 100%; 
+      padding: 12px; 
+      border-radius: 5px; 
+      border: 1px solid #ddd; 
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    button { 
+      width: 100%; 
+      padding: 12px; 
+      background: #667eea; 
+      color: white; 
+      font-weight: bold; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+    button:hover { 
+      background: #5568d3; 
+    }
+    .alert {
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .alert-error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+    .alert-success {
+      background: #efe;
+      color: #3c3;
+      border: 1px solid #cfc;
+    }
+    .signup-link { 
+      text-align: center; 
+      margin-top: 20px; 
+      color: #555;
+    }
+    .signup-link a { 
+      color: #667eea; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .back-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h2>Login</h2>
-    <form>
-      <input type="email" placeholder="Email" required />
-      <input type="password" placeholder="Password" required />
+    <h2>Login to Daily News</h2>
+    
+    <div id="errorMessage" class="alert alert-error"></div>
+    <div id="successMessage" class="alert alert-success"></div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+      </div>
+      
       <button type="submit">Log In</button>
     </form>
+    
     <div class="signup-link">
       <p>Don't have an account? <a href="signup.html">Sign up</a></p>
     </div>
+    
+    <div class="back-link">
+      <a href="index.html">← Back to Home</a>
+    </div>
   </div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000';
+    
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      errorMessage.style.display = 'none';
+      successMessage.style.display = 'none';
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed');
+        }
+        
+        // Store token and user info in localStorage
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userName', data.user.name);
+        localStorage.setItem('userEmail', data.user.email);
+        
+        successMessage.textContent = 'Login successful! Redirecting...';
+        successMessage.style.display = 'block';
+        
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+        
+      } catch (error) {
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
