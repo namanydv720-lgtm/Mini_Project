@@ -14,7 +14,7 @@
     }
 
     header {
-      background: #434242;
+      background: #ffffff;
       color: #fff;
       padding: 10px 0;
       display: flex;
@@ -23,12 +23,13 @@
       flex-wrap: wrap;
     }
 
-    .header-left {
+    .header-left {  
       display: flex;
       align-items: center;
     }
 
     .date {
+      color: black;
       font-size: 0.94em;
       margin-left: 15px;
     }
@@ -561,6 +562,64 @@
         height: 200px;
       }
     }
+    /* Responsive styling: add at the bottom of your style block */
+
+@media (max-width: 900px) {
+  main { max-width: 99vw; padding: 10px; }
+}
+
+/* Tablets and phones */
+@media (max-width: 768px) {
+  header, nav {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 10px 8vw !important;
+  }
+  .header-left, .options-right, .nav-left, .nav-right, .nav-center {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+    justify-content: flex-start !important;
+  }
+  .site-title {
+    text-align: center !important;
+    font-size: 1.25em !important;
+    width: 100% !important;
+    margin: 8px 0 !important;
+  }
+  .news-masthead { font-size: 2.2em !important; }
+  nav select, nav a, .category-btn {
+    width: 100% !important;
+    margin: 6px 0 !important;
+    box-sizing: border-box !important;
+  }
+  .search-container input[type="text"] {
+    width: 100% !important;
+  }
+  .news-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0 !important;
+  }
+  .news-card img {
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 10px !important;
+  }
+  .menu-list { flex-direction: column !important; margin: 8px !important; }
+  .right-sections { border-left: none !important; padding-left: 0 !important; }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .news-masthead { font-size: 1.4em !important; }
+  .site-title { font-size: 1em !important; }
+  .options-right button, nav select, nav a, .category-btn {
+    font-size: 14px !important;
+    padding: 8px !important;
+  }
+  .news-title { font-size: 16px !important; }
+}
+
   </style>
 </head>
 
@@ -662,7 +721,7 @@
       </div>
     </div>
     <div class="nav-center" id="nav-menu">
-      <a href="#" onclick="loadAllArticles()">Home</a>
+      
       
       <!-- State dropdown with dynamic update -->
       <select id="district-select" onchange="updateDistricts()">
@@ -678,16 +737,28 @@
       </select>
       
       <!-- District dropdown - populated dynamically -->
+
       <select id="city-select" onchange="handleFilterChange()">
         <option value="">Select District</option>
+        
       </select>
-      
-      <button class="category-btn selected" onclick="selectCategory(this)">Sports</button>
+      <a href="#" class="category-btn selected" onclick="loadAllArticles()">Home</a>
+      <button class="category-btn" onclick="selectCategory(this)">Sports</button>
       <button class="category-btn" onclick="selectCategory(this)">Politics</button>
       <button class="category-btn" onclick="selectCategory(this)">Business</button>
-      <button class="category-btn" onclick="selectCategory(this)">Tech</button>
-      <button class="category-btn" onclick="selectCategory(this)">Education</button>
-      <button class="category-btn" onclick="selectCategory(this)">World news</button>
+
+      
+
+      <select id="category-select" onchange="handleCategoryChange()" style="margin: 0 10px; padding: 6px 12px; border-radius: 4px;">
+      <option value="All Categories">All Categories</option>
+      <option value="Sports">Sports</option>
+      <option value="Politics">Politics</option>
+      <option value="Business">Business</option>
+      <option value="Tech">Tech</option>
+      <option value="Education">Education</option>
+      <option value="World news">World news</option>
+      </select>
+
     </div>
     <div class="nav-right">
       <a href="about.html">About Us</a>
@@ -741,7 +812,7 @@
     });
 
     const container = document.getElementById('news-container');
-    let currentCategory = 'Home';
+    let currentCategory = '';
 
     // State to District mapping
     const stateDistrictMap = {
@@ -811,6 +882,12 @@
       ],
       "Home":["home"]
     };
+  function handleCategoryChange() {
+    const selectedCategory = document.getElementById('category-select').value;
+    currentCategory = selectedCategory;
+    handleFilterChange();
+}
+
 
     // Update districts based on selected state
     function updateDistricts() {
@@ -994,9 +1071,8 @@
       document.getElementById('search-input').value = '';
 
       document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
-      document.querySelector('.category-btn').classList.add('selected');
-      currentCategory = 'Sports';
-
+      document.querySelector('a[onclick*="loadAllArticles"]').classList.add('selected');
+      currentCategory = '';
       handleFilterChange();
     }
 
@@ -1044,11 +1120,8 @@
 // Set English as default language
 document.getElementById('language-select').value = 'en';
 
-// Fetch English articles on page load
-fetchArticles({ 
-  category: currentCategory,
-  language: 'en'  // ← Add this to show only English by default
-});
+// Fetch articles on page load
+fetchArticles();
 
   </script>
 </body>
